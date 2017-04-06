@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>登录</title>
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+</head>
+<body>
+	<div class="easyui-panel" title="订餐系统后台" style="width:400px;" data-options="fit:true">
+		<div style="padding:100px 0 10px 565px;">
+	    <form id="ff">
+	    	<table>
+	    		<tr>
+	    			<td>用户名:</td>
+	    			<td><input class="easyui-validatebox" type="text" name="raname" id="username" data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>&nbsp;&nbsp;密码:</td>
+	    			<td><input class="easyui-validatebox" type="password" name="rapwd" id="password" data-options="required:true"></input></td>
+	    		</tr>
+	    	</table>
+	    </form>
+	    </div>
+	    <div style="text-align:center;padding:5px">
+	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">登录</a>
+	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重置</a>
+	    </div>
+	</div>
+</body>
+</html>

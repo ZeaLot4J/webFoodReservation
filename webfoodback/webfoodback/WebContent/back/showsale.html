@@ -1,0 +1,57 @@
+<table id="show_food_sale" data-options="fit:true"></table>  
+
+<script>
+$('#show_food_sale').datagrid({   
+    url:'../resorder.action',
+    method: 'POST',
+    fitColumns:true,
+    loadMsg:'数据加载中....',
+    queryParams:{op:'showsale'},
+    pagination:true,//显示分页栏
+    striped:true,//斑马线效果
+    nowrap:false,//超出宽度自动截取
+    rownumbers:true,//显示行数
+    pageSize:5,
+    pageList:[5,10,15,20,30],
+    sortName:'fid',//排序的列
+    remoteSort:false,//前端排序而非服务器端的排序
+    toolbar:[{
+		iconCls: 'icon-reload',
+		text: '刷新',
+		handler: refresh
+	}],
+    columns:[[
+		{field:'fids',title:'商品编号',width:100,align:'center',checkbox:true},
+		{field:'fphoto',title:'商品图片',width:100,align:'center',formatter: function(value,row,index){
+				var picStr="";
+				//console.info(value);
+				if(value.indexOf(",")>0){
+					value=value.split(",");
+					for(var i=0;i<value.length;i++){
+						picStr+="<img src='../"+value[i]+"' width='100px' height='100px' />";
+					}
+				}else if(value!=""){
+					picStr+="<img src='../"+value+"' width='100px' height='100px' />";
+				}else{
+					picStr+="<img src='../../pics/zanwu.jpg' width='100px' height='100px' />";
+				}
+				return picStr;
+			}
+		}, 
+        {field:'fid',title:'商品编号',width:100,align:'center',sortable:true},   
+        {field:'fname',title:'商品名称',width:100,align:'center'},   
+        {field:'normprice',title:'正常价格',width:100,align:'center'},   
+        {field:'realprice',title:'实际价格',width:100,align:'center'},    
+        {field:'detail',title:'商品描述',width:100,align:'center'}   
+    ]],
+    toolbar:"#goods_manager_search"
+	
+});
+function refresh(){
+	$("#show_food_sale").datagrid({
+		url:"../foodrank.action",
+		queryParams:{op:"showsale"},
+		method:"POST"
+	})
+}
+</script>	

@@ -1,0 +1,1 @@
+2016-12-21 16:36:02,159 ERROR [main] dao.DBHelper (DBHelper.java:343) - com.mysql.jdbc.exceptions.MySQLSyntaxErrorException: Table 'webfood.tag' doesn't exist

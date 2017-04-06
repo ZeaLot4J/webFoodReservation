@@ -1,0 +1,53 @@
+<table id="show_item_info" data-options="fit:true,showFooter:true"></table>  
+
+<script>
+$("#show_item_info").datagrid({
+	striped:true,
+	method: 'POST',
+	nowrap: false,
+	url: '../resorder.action',
+	loadMsg: '正在载入订单详细信息...',
+	rownumbers:true,
+	queryParams:{
+		op:'getallitems'
+	},
+	sortName:'roiid',
+	remoteSort:false,
+	showFooter:true,
+	toolbar:[{
+		iconCls: 'icon-reload',
+		text: '刷新',
+		handler: refresh
+	},'-',{
+		iconCls: 'icon-edit',
+		text: '总计',
+		handler: total
+	}],
+	columns:[[   
+	          {field:'roiid',title:'条目编号',width:100,align:'center',sortable:true},   
+	          {field:'fname',title:'菜肴名称',width:100,align:'center'},   
+	          {field:'dealprice',title:'单价',width:100,align:'center'},   
+	          {field:'num',title:'数量',width:100,align:'center'},   
+	      ]],
+	fitColumns:true
+});
+function refresh(){
+	$("#show_item_info").datagrid({
+		url:"../resorder.action",
+		queryParams:{op:"getallitems"},
+		method:"POST"
+	})
+}
+function total(){
+	$.ajax({
+		url:"../resorder.action",
+		type:"POST",
+		data:"op=gettotal",
+		dataType:"JSON",
+		success:function(data){
+			$.messager.alert("提示","目前总共盈利"+data.obj+"￥");
+		}
+	});
+}
+ 
+</script>

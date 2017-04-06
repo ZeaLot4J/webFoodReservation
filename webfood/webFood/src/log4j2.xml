@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+	    <!-- 日志输出到控制台 -->
+		<Console name="stdout" target="SYSTEM_OUT">
+			<!-- 日志的格式  -->
+			<PatternLayout pattern="%d %-5p %C{2} - %m%n" />
+		</Console>
+
+		<!-- 将日志输出到一个文件保存，路径为当前项目下的logs/browe.log -->
+		<File name="fileout" fileName="logs/browe.log">
+			<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
+		</File>
+	</Appenders>
+
+
+	<Loggers>
+		<!-- 这是日志对象，指定哪个java包要输出日志，级别为info（普通信息）
+		日志级别分为：none -> fatal -> error -> info -> debug -> all
+		此时配置等级为info，则info() debug() all()方法会输出日志，其它的不管
+		 -->
+		<Logger name="com.zl" level="info" >	
+		</Logger>
+
+		<Root level="info">
+			<AppenderRef ref="stdout" />
+			<AppenderRef ref="fileout" />
+		</Root>
+	</Loggers>
+
+
+</Configuration>

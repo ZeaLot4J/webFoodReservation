@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>webFood</display-name>
+	<!-- 编码集过滤 -->
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>com.zl.web.filters.CharacterEncodingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<listener>
+		<listener-class>com.zl.web.listeners.InitListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.zl.web.listeners.TimerListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>IndexServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.IndexServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ResfoodServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.ResfoodServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ResorderServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.ResorderServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>VerifyCodeServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.VerifyCodeServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ResuserServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.ResuserServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>HistoryServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.HistoryServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>UpAndDownServlet</servlet-name>
+		<servlet-class>com.zl.web.servlets.UpAndDownServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	  	<servlet-name>IndexServlet</servlet-name>
+	  	<url-pattern>/index.action</url-pattern>
+  	</servlet-mapping>
+	<servlet-mapping>
+	  	<servlet-name>ResfoodServlet</servlet-name>
+	  	<url-pattern>/resfood.action</url-pattern>
+  	</servlet-mapping>
+	<servlet-mapping>
+	  	<servlet-name>ResorderServlet</servlet-name>
+	  	<url-pattern>/resorder.action</url-pattern>
+  	</servlet-mapping>
+	<servlet-mapping>
+	  	<servlet-name>VerifyCodeServlet</servlet-name>
+	  	<url-pattern>/verifyCode.action</url-pattern>
+  	</servlet-mapping>
+	<servlet-mapping>
+	  	<servlet-name>ResuserServlet</servlet-name>
+	  	<url-pattern>/resuser.action</url-pattern>
+  	</servlet-mapping>
+	<servlet-mapping>
+	  	<servlet-name>HistoryServlet</servlet-name>
+	  	<url-pattern>/history.action</url-pattern>
+  	</servlet-mapping>
+	<servlet-mapping>
+	  	<servlet-name>UpAndDownServlet</servlet-name>
+	  	<url-pattern>/upanddown.action</url-pattern>
+  	</servlet-mapping>
+	
+	<!-- 配置错误码的处理页面 -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+	</error-page>
+	<!-- 隐藏服务器端的错误信息 -->
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.html</location>
+	</error-page>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>
+
+
+
+
+
+
+
+
+
+

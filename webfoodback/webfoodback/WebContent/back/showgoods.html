@@ -1,0 +1,262 @@
+<table id="show_goods_info" data-options="fit:true"></table>  
+
+<div id="goods_manager_search" style="height:28px;">
+	<a href="javascript:addGoodsInfo()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" 
+		style="float:left">添加</a>
+	<div class="datagrid-btn-separator"></div>	
+	<a href="javascript:updateGoodsInfo()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" 
+		style="float:left">修改</a>
+	<div class="datagrid-btn-separator"></div>
+	<a href="javascript:delGoodsInfo()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" 
+		style="float:left">删除</a>
+	<div class="datagrid-btn-separator"></div>		
+	<lable>商品名称:</lable><input type="text" name="fname" id="search_fname"/>
+	<a id="btn" href="javascript:goods_search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'" 
+		style="float:left">查询</a>	
+</div>
+
+<div id="show_goods_add_info" class="easyui-dialog"
+	data-options="iconCls:'icon-add',resizable:true,modal:true,fit:true,closed:true">  
+	商品名称:<input type="text" name="fname" id="fname" />
+	商品正常价格:<input type="number" name="normprice" id="normprice" />
+	商品实际价格:<input type="number" name="realprice" id="realprice" />
+	商品图片:<input type="file" name="fphoto" id="fphoto" multiple="multiple" onchange="previewMultipleImage(this,'showpic')" />
+	<input type="button" value="添加" id="addbtn" onclick="addGoods()" >
+	<input type="button" value="修改" id="updatebtn" onclick="updateGoods()" style="display:none;" >
+	<input type="text"  id="fid"  style="display:none;" >
+	
+	<div id="showpic" style="width:100%"></div>
+	<p style="clear: both;">商品描述:</p>
+	<div>
+		 <script id="editor" type="text/plain" style="width:98%;height:400px;"></script>
+	</div>
+</div>
+
+<script>
+	$('#show_goods_info').datagrid({   
+	    url:'../resfood.action',
+	    fitColumns:true,
+	    loadMsg:'数据加载中....',
+	    queryParams:{op:'findGoodsInfoByPage'},
+	    pagination:true,//显示分页栏
+	    striped:true,//斑马线效果
+	    nowrap:false,//超出宽度自动截取
+	    rownumbers:true,//显示行数
+	    pageSize:5,
+	    pageList:[5,10,15,20,30],
+	    sortName:'fid',//排序的列
+	    remoteSort:false,//前端排序而非服务器端的排序
+	    columns:[[
+			{field:'fids',title:'商品编号',width:100,align:'center',checkbox:true},
+			{field:'fphoto',title:'商品图片',width:100,align:'center',formatter: function(value,row,index){
+					var picStr="";
+					//console.info(value);
+					if(value.indexOf(",")>0){
+						value=value.split(",");
+						for(var i=0;i<value.length;i++){
+							picStr+="<img src='../"+value[i]+"' width='100px' height='100px' />";
+						}
+					}else if(value!=""){
+						picStr+="<img src='../"+value+"' width='100px' height='100px' />";
+					}else{
+						picStr+="<img src='../../pics/zanwu.jpg' width='100px' height='100px' />";
+					}
+					return picStr;
+				}
+			}, 
+	        {field:'fid',title:'商品编号',width:100,align:'center',sortable:true},   
+	        {field:'fname',title:'商品名称',width:100,align:'center'},   
+	        {field:'normprice',title:'正常价格',width:100,align:'center'},   
+	        {field:'realprice',title:'实际价格',width:100,align:'center'},    
+	        {field:'detail',title:'商品描述',width:100,align:'center'},   
+	        {field:'up',title:'好评',width:100,align:'center',sortable:true},   
+	        {field:'down',title:'差评',width:100,align:'center',sortable:true}   
+	    ]],
+	    toolbar:"#goods_manager_search"
+		
+	});
+	
+	function addGoodsInfo(){
+		$("#addbtn").css("display","block");
+		$("#updatebtn").css("display","none");
+		
+		$("#show_goods_add_info").dialog({   
+		  	title: '添加商品信息',   
+		    closed: false,   
+		  	iconCLs:'icon-add'  
+		});
+		
+		clearAllValue();
+	}
+	
+	function delGoodsInfo(){
+		//获取被选中的行
+		var rows=$('#show_goods_info').datagrid("getChecked");
+		if(rows.length<=0){
+			$.messager.show({title:'温馨提示',msg:'请选中你要删除的数据....',timeout:2000,showType:'slide'});
+		}else{
+			$.messager.confirm('删除确认','你确定要删除选中的数据吗?',function(result){
+				if(result){
+					var fids="";
+					for(var i=0;i<rows.length-1;i++){
+						fids+=rows[i].fid+",";
+					}
+					fids+=rows[i].fid;
+					
+					$.post("../resfood.action",{op:"delGoods",fids:fids},function(data){
+						if(data=="0"){
+							$.messager.alert("失败提示","商品删除失败!","error");
+						}else{
+							$.messager.show({title:'成功提示',msg:'商品删除成功',timeout:2000,showType:'slide'});
+							//重新加载数据
+							$('#show_goods_info').datagrid("reload");
+						}
+					});
+				}
+			});
+		}
+	}
+	
+	function updateGoodsInfo(){
+		//获取被选中的行
+		var rows=$('#show_goods_info').datagrid("getChecked");
+		if(rows.length>1 || rows.length<=0){
+			$.messager.alert("温馨提示","请选中一行数据进行修改...","error");
+		}else{
+			rows=rows[0];				
+			$("#show_goods_add_info").dialog({title: '修改商品信息',closed: false,iconCLs:'icon-edit'});
+				//先清除再赋值
+				clearAllValue();
+				$("#fid").val(rows.fid);
+				$("#fname").val(rows.fname);
+				$("#normprice").val(rows.normprice);
+				$("#realprice").val(rows.realprice);
+				
+	
+				if( rows.fphoto=="" ){
+					$("#showpic").html("<img src='../../pics/zanwu.jpg' width='100px' height='100px' />");
+				}else{
+					$("#showpic").html("<img src='../"+rows.fphoto+"' width='100px' height='100px' />");
+				}
+				
+
+				UE.getEditor('editor').setContent(rows.detail);
+				
+				$("#addbtn").css("display","none");
+				$("#updatebtn").css("display","block");
+				
+		}
+	}
+	
+	function goods_search(){
+		
+		var fname=$.trim($("#search_fname").val());
+		
+		if( fname==""){ //当查询搜索词为空时
+			$('#show_goods_info').datagrid({   
+			    url:'../resfood.action',
+			    queryParams:{op:'findGoodsInfoByPage'}
+			});	
+		}else{
+			$('#show_goods_info').datagrid({   
+			    url:'../resfood.action',
+			    queryParams:{op:'goodsInfoSearch',fname:fname}
+			});
+		}
+	}
+	
+	var ue = UE.getEditor('editor');
+ 	
+ 	
+ 	function addGoods(){
+ 		
+ 		var fname=$.trim( $("#fname").val() );
+ 		var normprice=$.trim( $("#normprice").val() );
+ 		var realprice=$.trim( $("#realprice").val() );
+
+ 		var detail=ue.getContent();
+ 				
+ 		data={fname:fname,normprice:normprice,realprice:realprice,detail:detail};
+ 		
+ 		$.ajaxFileUpload({
+ 			url:"../resfood.action?op=addGoods",
+ 			secureuri:false,
+ 			fileElementId:"fphoto",// ["pic","pic"]要上传的文件的文本框的id
+ 			data:data,
+ 			dataType:"json",
+ 			success:function(data,status){
+ 				data=$.trim(data);
+ 				if(data=="0"){
+ 					$.messager.alert("提示","商品添加失败....","error");
+ 				}else{
+ 					clearAllValue();
+ 					$.messager.alert("提示","商品添加成功....","info");
+ 					$("#show_goods_add_info").dialog("close");
+ 					$('#show_goods_info').datagrid("reload");
+ 				}
+ 			},
+ 			error:function(data,status,e){
+ 				alert(e);
+ 			}
+ 		});
+ 	}
+ 	
+ 	
+ 	function updateGoods(){
+ 		var fid=$.trim( $("#fid").val() );
+		var fname=$.trim( $("#fname").val() );
+ 		var normprice=$.trim( $("#normprice").val() );
+ 		var realprice=$.trim( $("#realprice").val() );
+
+ 		var detail=ue.getContent();
+
+ 		data={fname:fname,normprice:normprice,realprice:realprice,detail:detail,fid:fid};
+		
+		
+		$.ajaxFileUpload({
+ 			url:"../resfood.action?op=updateGoods",
+ 			secureuri:false,
+ 			fileElementId:"fphoto",// ["pic","pic"]要上传的文件的文本框的id
+ 			data:data,
+ 			dataType:"json",
+ 			success:function(data,status){
+ 				data=$.trim(data);
+ 				if(data=="0"){
+ 					$.messager.alert("提示","商品信息修改失败....","error");
+ 				}else{
+ 					clearAllValue();
+ 					$.messager.alert("提示","商品信息修改成功....","info");
+ 					$("#show_goods_add_info").dialog("close");
+ 					$('#show_goods_info').datagrid("reload");
+ 				}
+ 			},
+ 			error:function(data,status,e){
+ 				alert(e);
+ 			}
+ 		});
+ 	}
+	
+ 	
+ 	function clearAllValue(){
+ 		$("#fname").val("");
+		$("#normprice").val("");
+		$("#realprice").val("");
+		$("#showpic").html("");
+		//TODO:商品图片不选的话 会调用上一次修改或添加的图片   需要清除原先存在的
+		//这个input元素复制一个，然后将原来的删除
+		var file = $("#fphoto")
+		file.after(file.clone().val(""));
+		file.remove();
+		ue.setContent("");
+ 	}
+ 	
+ 	$(function(){
+ 		$("#search_fname").keydown(function(event){
+ 			if(event.keyCode==13){
+ 				goods_search();
+ 			}
+ 		});
+ 	});
+
+</script>
+ 

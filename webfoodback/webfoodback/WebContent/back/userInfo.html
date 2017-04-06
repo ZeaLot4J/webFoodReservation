@@ -1,0 +1,40 @@
+<table id="user_info" data-options="fit:true">
+</table>  
+
+<script>
+$("#user_info").datagrid({
+	striped:true,
+	method: 'POST',
+	nowrap: false,
+	url: '../resuser.action',
+	loadMsg: '正在载入用户信息...',
+	pagination:true,
+	rownumbers:true,
+	pageSize:10,
+	queryParams:{
+		op:'getallusers'
+	},
+	sortName:'userid',
+	remoteSort:false,
+	toolbar:[{
+		iconCls: 'icon-reload',
+		text: '刷新',
+		handler: refresh
+	}],
+	columns:[[   
+	          {field:'userid',title:'ID',width:100,align:'center',sortable:true},   
+	          {field:'username',title:'用户名',width:100,align:'center'},   
+	          {field:'email',title:'邮箱',width:100,align:'center'}   
+	      ]],
+	fitColumns:true 
+});
+
+
+function refresh(){
+	$("#user_info").datagrid({
+		url:"../resuser.action",
+		queryParams:{op:"getallusers"},
+		method:"POST"
+	})
+}
+</script>

@@ -1,0 +1,42 @@
+<table id="show_order_info" data-options="fit:true"></table>  
+
+<script>
+$("#show_order_info").datagrid({
+	striped:true,
+	method: 'POST',
+	nowrap: false,
+	url: '../resorder.action',
+	loadMsg: '正在载入订单信息...',
+	pagination:true,
+	rownumbers:true,
+	pageSize:10,
+	queryParams:{
+		op:'getallorders'
+	},
+	sortName:'roid',
+	remoteSort:false,
+	toolbar:[{
+		iconCls: 'icon-reload',
+		text: '刷新',
+		handler: refresh
+	}],
+	columns:[[   
+	          {field:'roid',title:'订单编号',width:100,align:'center',sortable:true},   
+	          {field:'username',title:'用户名',width:100,align:'center'},   
+	          {field:'address',title:'送货地址',width:100,align:'center'},   
+	          {field:'tel',title:'联系电话',width:100,align:'center'},   
+	          {field:'ordertime',title:'下订时间',width:100,align:'center'},   
+	          {field:'deliverytime',title:'送达时间',width:100,align:'center'},   
+	          {field:'ps',title:'备注',width:100,align:'center'},   
+	      ]],
+	fitColumns:true,
+});
+function refresh(){
+	$("#show_order_info").datagrid({
+		url:"../resorder.action",
+		queryParams:{op:"getallorders"},
+		method:"POST"
+	})
+}
+ 
+</script>
